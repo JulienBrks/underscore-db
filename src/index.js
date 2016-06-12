@@ -26,14 +26,31 @@ module.exports = {
   },
 
   __id: function() {
+    if (this.rewriteId !== 'id') {
+      if (typeof this.rewriteId === 'object') {
+        // console.log('key + value', key, this.rewriteId[key]);
+        if (this.rewriteId[key]) {
+          return this.rewriteId[key]
+        }
+      } else {
+        return this.rewriteId
+      }
+    } else {
+      return 'id';
+    }
     var id = this.id || 'id';
     return id;
   },
 
-  getById: function(collection, id) {
+  id: function(collection, key) {
+        return this.__id(key);
+          
+  },
+
+  getById: function(collection, id, key) {
     var self = this;
     return this.find(collection, function(doc) {
-      return doc[self.__id()] === id;
+      return doc[self.__id(key)] === id;
     });
   },
 
@@ -41,10 +58,11 @@ module.exports = {
     return uuid();
   },
 
-  insert: function(collection, doc) {
-    if (doc[this.__id()]) {
+  insert: function(collection, doc, key) {
+    if (doc[this.__id(key)]) {
+
       // id is set
-      var d = this.getById(collection, doc[this.__id()]);
+      var d = this.getById(collection, doc[this.__id(key)]);
       if (d) {
         // replace properties of existing object
         this.__empty(d);
@@ -55,7 +73,7 @@ module.exports = {
       }
     } else {
       // create id and push new object
-      doc[this.__id()] = this.createId(collection, doc);
+      doc[this.__id(key)] = this.createId(collection, doc, key);
       collection.push(doc);
     }
 
