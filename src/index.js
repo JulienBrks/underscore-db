@@ -25,7 +25,7 @@ module.exports = {
     if (index != -1) array.splice(index, 1);
   },
 
-  __id: function() {
+  __id: function(key) {
     if (this.rewriteId !== 'id') {
       if (typeof this.rewriteId === 'object') {
         // console.log('key + value', key, this.rewriteId[key]);
